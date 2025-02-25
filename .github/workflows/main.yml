@@ -14,6 +14,40 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Install sing-box
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo curl -fsSL https://sing-box.app/gpg.key -o /etc/apt/keyrings/sagernet.asc
+        sudo chmod a+r /etc/apt/keyrings/sagernet.asc
+        echo "deb [arch=`dpkg --print-architecture` signed-by=/etc/apt/keyrings/sagernet.asc] https://deb.sagernet.org/ * *" | sudo tee /etc/apt/sources.list.d/sagernet.list > /dev/null
+        sudo apt-get update
+        sudo apt-get install sing-box
+
+    - name: Install mihomo
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        case "$(uname -m)" in
+        'x86_64') ARCH='amd64' ;;
+        'x86' | 'i686' | 'i386') ARCH='386' ;;
+        'aarch64' | 'arm64') ARCH='arm64' ;;
+        'armv7l') ARCH='armv7' ;;
+        'riscv64') ARCH='riscv64' ;;
+        's390x') ARCH='s390x' ;;
+        *) ARCH='unknown' ;;
+        esac
+        echo "The architecture is: $ARCH"
+        [ "$ARCH" = 'unknown' ] || {
+          MIHOMO_VER=$(wget -q -O - 'https://github.com/MetaCubeX/mihomo/releases/download/Prerelease-Alpha/version.txt')
+          # e.g. alpha-3e966e8
+          MIHOMO_URL='https://github.com/MetaCubeX/mihomo/releases/download/Prerelease-Alpha/mihomo-linux-'$ARCH'-'$MIHOMO_VER'.deb'
+          # e.g. https://github.com/MetaCubeX/mihomo/releases/download/Prerelease-Alpha/mihomo-linux-amd64-alpha-3e966e8.deb
+          wget -q -O ./mihomo.deb "$MIHOMO_URL"
+          sudo apt-get install ./mihomo.deb
+          rm -f ./mihomo.deb
+        }
+
     - name: Init repo
       shell: bash
       run: |
@@ -28,6 +62,6 @@ jobs:
         git checkout --orphan $Branch; git reset
         chmod +x ./genlists.sh
         bash ./genlists.sh
-        git add *.txt *.list *.ver
+        git add *.txt *.list *.ver china_ip.mrs china_ip.srs
         git commit -m "$(date -u "+%Y%m%d%H%M")"
         git push -f origin refs/heads/$Branch

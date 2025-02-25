@@ -102,6 +102,29 @@ update_ipcidr() {
 	- deny6: http://www.ipdeny.com/ipv6/ipaddresses/blocks/cn.zone
 	EOF
 
+	## Compile mihoho ruleset
+	[ "$(which mihomo 2>/dev/null)"x = 'x' ] || {
+		cat "$IPv4" "$IPv6" > mihomo.tmp
+		mihomo convert-ruleset ipcidr text mihomo.tmp china_ip.mrs
+	}
+
+	## Compile sing-box rule-set
+	[ "$(which sing-box 2>/dev/null)"x = 'x' ] || {
+		printf '{\n\t"version": 3,\n\t"rules": [\n' > china_ip.json
+		printf '\t\t{\n\t\t\t"ip_cidr": [\n' >> china_ip.json
+		while read -r cnip4; do
+			printf '\t\t\t\t"%s",\n' "$cnip4" >> china_ip.json
+		done < "$IPv4"
+		while read -r cnip6; do
+			printf '\t\t\t\t"%s",\n' "$cnip6" >> china_ip.json
+		done < "$IPv6"
+		$SED -i '$s/,//' china_ip.json
+		printf '\t\t\t]\n\t\t}\n' >> china_ip.json
+		printf '\t]\n}\n' >> china_ip.json
+		sing-box rule-set compile china_ip.json
+		rm china_ip.json
+	}
+
 	# Cleanup
 	rm -f *.tmp
 }
