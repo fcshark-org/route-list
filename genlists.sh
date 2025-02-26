@@ -102,6 +102,35 @@ update_ipcidr() {
 	- deny6: http://www.ipdeny.com/ipv6/ipaddresses/blocks/cn.zone
 	EOF
 
+	## Compile mihoho ruleset
+	! [ -x "$(command -v mihomo)" ] || {
+		cat "$IPv4" "$IPv6" > mihomo.tmp
+		mihomo convert-ruleset ipcidr text mihomo.tmp china_ip.mrs
+	}
+
+	## Compile sing-box rule-set
+	! [ -x "$(command -v sing-box)" ] || {
+		IPCIDR='china_ip.json'
+		cat <<-EOF > $IPCIDR
+			{
+			  "version": 3,
+			  "rules": [
+			    {
+			      "ip_cidr": [
+		EOF
+		$SED -En 's|^|        "|; s|$|",|; p' "$IPv4" >> $IPCIDR
+		$SED -En 's|^|        "|; s|$|",|; p' "$IPv6" >> $IPCIDR
+		$SED -i '${s|,$||}' $IPCIDR
+		cat <<-EOF >> $IPCIDR
+			      ]
+			    }
+			  ]
+			}
+		EOF
+		sing-box rule-set compile $IPCIDR
+		rm $IPCIDR
+	}
+
 	# Cleanup
 	rm -f *.tmp
 }
