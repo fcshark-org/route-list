@@ -29,10 +29,11 @@ Routing rules for dnsmasq and other advanced cores. Automatically update every d
  
 ### Binary
 
-+ China IP CIDR
-  + mrs
++ mrs
+  + China IP CIDR
     - https://raw.githubusercontent.com/fcshark-org/route-list/release/china_ip.mrs
     - https://cdn.jsdelivr.net/gh/fcshark-org/route-list@release/china_ip.mrs
-  + srs
++ srs
+  + China IP CIDR
     - https://raw.githubusercontent.com/fcshark-org/route-list/release/china_ip.srs
     - https://cdn.jsdelivr.net/gh/fcshark-org/route-list@release/china_ip.srs
