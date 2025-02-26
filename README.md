@@ -26,3 +26,13 @@ Routing rules for dnsmasq and other advanced cores. Automatically update every d
 + GFW domain list [:information_source:](https://github.com/muink/route-list/blob/release/gfwlist.ver "Info")
   - https://raw.githubusercontent.com/muink/route-list/release/gfwlist.list
   - https://cdn.jsdelivr.net/gh/muink/route-list@release/gfwlist.list
+ 
+### Binary
+
++ China IP CIDR
+  + mrs
+    - https://raw.githubusercontent.com/muink/route-list/release/china_ip.mrs
+    - https://cdn.jsdelivr.net/gh/muink/route-list@release/china_ip.mrs
+  + srs
+    - https://raw.githubusercontent.com/muink/route-list/release/china_ip.srs
+    - https://cdn.jsdelivr.net/gh/muink/route-list@release/china_ip.srs
