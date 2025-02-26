@@ -62,6 +62,6 @@ jobs:
         git checkout --orphan $Branch; git reset
         chmod +x ./genlists.sh
         bash ./genlists.sh
-        git add *.txt *.list *.ver china_ip.mrs china_ip.srs
+        git add *.txt *.list *.ver *.mrs *.srs
         git commit -m "$(date -u "+%Y%m%d%H%M")"
         git push -f origin refs/heads/$Branch
