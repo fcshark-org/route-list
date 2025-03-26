@@ -104,12 +104,14 @@ update_ipcidr() {
 
 	## Compile mihoho ruleset
 	! [ -x "$(command -v mihomo)" ] || {
+		echo Compile mihoho ruleset
 		cat "$IPv4" "$IPv6" > mihomo.tmp
 		mihomo convert-ruleset ipcidr text mihomo.tmp china_ip.mrs
 	}
 
 	## Compile sing-box rule-set
 	! [ -x "$(command -v sing-box)" ] || {
+		echo Compile sing-box rule-set
 		IPCIDR='china_ip.json'
 		cat <<-EOF > $IPCIDR
 			{
